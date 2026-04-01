@@ -1,6 +1,10 @@
 # TidyBot — Home-Tidying Robot Simulation
 
-![TidyBot Demo](assets/demo.gif)
+[![Demo Video](assets/demo.gif)](https://youtu.be/L3voKXgXxlE)
+
+## Demo Video
+
+https://youtu.be/L3voKXgXxlE
 
 A ROS 2 simulation of a home-tidying robot that navigates a two-room home, collects 5 scattered objects, and returns them to a collection box.
 
@@ -155,6 +159,3 @@ home-tidying-robot/
         └── ground_truth_tf.py          # Localization TF publisher
 ```
 
-## Demo Video
-
-[TODO: Add demo video link]
