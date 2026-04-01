@@ -15,7 +15,7 @@ ros2 launch tidybot simulation.launch.py 2>&1 \
 PIPE_PID=$!
 
 # Wait for systems to load, then prompt user
-sleep 28
+sleep 33
 echo ""
 read -r -p ">>> Press Enter to start the tidying mission... "
 echo ""

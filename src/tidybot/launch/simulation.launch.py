@@ -164,5 +164,5 @@ def generate_launch_description():
             map_server, planner, controller, bt_nav, behaviors,
         ]),
         TimerAction(period=15.0, actions=[lifecycle]),
-        TimerAction(period=25.0, actions=[task]),
+        TimerAction(period=30.0, actions=[task]),
     ])
