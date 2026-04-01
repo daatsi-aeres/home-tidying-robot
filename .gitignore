@@ -1,0 +1,10 @@
+build/
+install/
+log/
+__pycache__/
+*.pyc
+.vscode/
+.idea/
+.claude/
+sid_prep_read/
+Internship assignment (drift).pdf

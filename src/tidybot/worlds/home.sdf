@@ -1,0 +1,325 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <world name="tidy_home">
+
+    <physics name="default_physics" type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+
+    <gravity>0 0 -9.81</gravity>
+
+    <!-- System plugins -->
+    <plugin filename="ignition-gazebo-physics-system" name="ignition::gazebo::systems::Physics"/>
+    <plugin filename="ignition-gazebo-sensors-system" name="ignition::gazebo::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="ignition-gazebo-scene-broadcaster-system" name="ignition::gazebo::systems::SceneBroadcaster"/>
+    <plugin filename="ignition-gazebo-user-commands-system" name="ignition::gazebo::systems::UserCommands"/>
+    <plugin filename="ignition-gazebo-contact-system" name="ignition::gazebo::systems::Contact"/>
+    <plugin filename="ignition-gazebo-imu-system" name="ignition::gazebo::systems::Imu"/>
+
+    <scene>
+      <ambient>0.4 0.4 0.4 1.0</ambient>
+      <background>0.7 0.8 0.9 1.0</background>
+      <shadows>true</shadows>
+    </scene>
+
+    <!-- Lighting -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.9 0.9 0.85 1</diffuse>
+      <specular>0.3 0.3 0.3 1</specular>
+      <direction>-0.5 0.3 -1.0</direction>
+    </light>
+    <light type="point" name="room1_light">
+      <pose>-2.0 0 2.8 0 0 0</pose>
+      <diffuse>0.8 0.8 0.7 1</diffuse>
+      <attenuation><range>8</range><constant>0.5</constant><linear>0.1</linear><quadratic>0.01</quadratic></attenuation>
+    </light>
+    <light type="point" name="room2_light">
+      <pose>4.0 0 2.8 0 0 0</pose>
+      <diffuse>0.8 0.8 0.7 1</diffuse>
+      <attenuation><range>8</range><constant>0.5</constant><linear>0.1</linear><quadratic>0.01</quadratic></attenuation>
+    </light>
+
+    <!-- ==================== GROUND ==================== -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="ground_link">
+        <collision name="c">
+          <geometry><plane><normal>0 0 1</normal><size>20 20</size></plane></geometry>
+          <surface><friction><ode><mu>0.8</mu><mu2>0.6</mu2></ode></friction></surface>
+        </collision>
+        <visual name="v">
+          <geometry><plane><normal>0 0 1</normal><size>20 20</size></plane></geometry>
+          <material><ambient>0.55 0.45 0.35 1</ambient><diffuse>0.6 0.5 0.4 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!--
+      LAYOUT (wide open spaces):
+      Room 1: x[-4.5, 0.5]  y[-2.5, 2.5]  (5m x 5m)
+      Room 2: x[0.5, 6.5]   y[-2.5, 2.5]  (6m x 5m)
+      Doorway: x=0.5, y[-0.5, 0.5] (1m wide)
+      Robot spawn: (-2.0, -1.5)
+      Collection box: (-1.0, -1.5)
+    -->
+
+    <!-- ==================== WALLS ==================== -->
+    <model name="wall_r1_west"><static>true</static><pose>-4.5 0 1.25 0 0 0</pose>
+      <link name="l"><collision name="c"><geometry><box><size>0.15 5.15 2.5</size></box></geometry></collision>
+      <visual name="v"><geometry><box><size>0.15 5.15 2.5</size></box></geometry>
+        <material><ambient>0.85 0.85 0.80 1</ambient><diffuse>0.9 0.9 0.85 1</diffuse></material></visual></link></model>
+
+    <model name="wall_r1_north"><static>true</static><pose>-2.0 2.5 1.25 0 0 0</pose>
+      <link name="l"><collision name="c"><geometry><box><size>5.15 0.15 2.5</size></box></geometry></collision>
+      <visual name="v"><geometry><box><size>5.15 0.15 2.5</size></box></geometry>
+        <material><ambient>0.85 0.85 0.80 1</ambient><diffuse>0.9 0.9 0.85 1</diffuse></material></visual></link></model>
+
+    <model name="wall_r1_south"><static>true</static><pose>-2.0 -2.5 1.25 0 0 0</pose>
+      <link name="l"><collision name="c"><geometry><box><size>5.15 0.15 2.5</size></box></geometry></collision>
+      <visual name="v"><geometry><box><size>5.15 0.15 2.5</size></box></geometry>
+        <material><ambient>0.85 0.85 0.80 1</ambient><diffuse>0.9 0.9 0.85 1</diffuse></material></visual></link></model>
+
+    <!-- Doorway: 1.5m wide opening from y=-0.75 to y=0.75 -->
+    <model name="wall_div_north"><static>true</static><pose>0.5 1.625 1.25 0 0 0</pose>
+      <link name="l"><collision name="c"><geometry><box><size>0.15 1.75 2.5</size></box></geometry></collision>
+      <visual name="v"><geometry><box><size>0.15 1.75 2.5</size></box></geometry>
+        <material><ambient>0.85 0.85 0.80 1</ambient><diffuse>0.9 0.9 0.85 1</diffuse></material></visual></link></model>
+
+    <model name="wall_div_south"><static>true</static><pose>0.5 -1.625 1.25 0 0 0</pose>
+      <link name="l"><collision name="c"><geometry><box><size>0.15 1.75 2.5</size></box></geometry></collision>
+      <visual name="v"><geometry><box><size>0.15 1.75 2.5</size></box></geometry>
+        <material><ambient>0.85 0.85 0.80 1</ambient><diffuse>0.9 0.9 0.85 1</diffuse></material></visual></link></model>
+
+    <!-- Shoe rack just past doorway (forces Nav2 to plan around it) -->
+    <model name="shoe_rack"><static>true</static><pose>1.2 -0.2 0.15 0 0 0</pose>
+      <link name="body">
+        <collision name="c"><geometry><box><size>0.35 0.50 0.30</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.35 0.50 0.30</size></box></geometry>
+          <material><ambient>0.40 0.30 0.20 1</ambient><diffuse>0.45 0.35 0.25 1</diffuse></material></visual>
+        <inertial><mass>4.0</mass><inertia><ixx>0.06</ixx><iyy>0.04</iyy><izz>0.08</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+    </model>
+
+    <model name="wall_r2_east"><static>true</static><pose>6.5 0 1.25 0 0 0</pose>
+      <link name="l"><collision name="c"><geometry><box><size>0.15 5.15 2.5</size></box></geometry></collision>
+      <visual name="v"><geometry><box><size>0.15 5.15 2.5</size></box></geometry>
+        <material><ambient>0.80 0.82 0.85 1</ambient><diffuse>0.85 0.87 0.90 1</diffuse></material></visual></link></model>
+
+    <model name="wall_r2_north"><static>true</static><pose>3.5 2.5 1.25 0 0 0</pose>
+      <link name="l"><collision name="c"><geometry><box><size>6.15 0.15 2.5</size></box></geometry></collision>
+      <visual name="v"><geometry><box><size>6.15 0.15 2.5</size></box></geometry>
+        <material><ambient>0.80 0.82 0.85 1</ambient><diffuse>0.85 0.87 0.90 1</diffuse></material></visual></link></model>
+
+    <model name="wall_r2_south"><static>true</static><pose>3.5 -2.5 1.25 0 0 0</pose>
+      <link name="l"><collision name="c"><geometry><box><size>6.15 0.15 2.5</size></box></geometry></collision>
+      <visual name="v"><geometry><box><size>6.15 0.15 2.5</size></box></geometry>
+        <material><ambient>0.80 0.82 0.85 1</ambient><diffuse>0.85 0.87 0.90 1</diffuse></material></visual></link></model>
+
+    <!-- ==================== FURNITURE ==================== -->
+
+    <!-- Couch against west wall (sits on floor with base + seat + back) -->
+    <model name="couch"><static>true</static><pose>-3.8 0 0 0 0 0</pose>
+      <link name="base"><pose>0 0 0.075 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.6 1.6 0.15</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.6 1.6 0.15</size></box></geometry>
+          <material><ambient>0.25 0.25 0.25 1</ambient><diffuse>0.30 0.30 0.30 1</diffuse></material></visual>
+        <inertial><mass>8.0</mass><inertia><ixx>1.7</ixx><iyy>0.32</iyy><izz>1.85</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+      <link name="seat"><pose>0 0 0.25 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.6 1.6 0.20</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.6 1.6 0.20</size></box></geometry>
+          <material><ambient>0.35 0.40 0.55 1</ambient><diffuse>0.40 0.45 0.60 1</diffuse></material></visual>
+        <inertial><mass>10.0</mass><inertia><ixx>2.17</ixx><iyy>0.37</iyy><izz>2.37</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+      <joint name="js" type="fixed"><parent>base</parent><child>seat</child></joint>
+      <link name="back"><pose>-0.25 0 0.55 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.12 1.6 0.40</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.12 1.6 0.40</size></box></geometry>
+          <material><ambient>0.30 0.35 0.50 1</ambient><diffuse>0.35 0.40 0.55 1</diffuse></material></visual>
+        <inertial><mass>5.0</mass><inertia><ixx>0.90</ixx><iyy>0.07</iyy><izz>0.95</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+      <joint name="jb" type="fixed"><parent>seat</parent><child>back</child></joint>
+    </model>
+
+    <!-- Coffee table (Room 1 north — solid block to floor) -->
+    <model name="coffee_table"><static>true</static><pose>-2.5 1.5 0.225 0 0 0</pose>
+      <link name="body">
+        <collision name="c"><geometry><box><size>0.8 0.5 0.45</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.8 0.5 0.45</size></box></geometry>
+          <material><ambient>0.45 0.30 0.15 1</ambient><diffuse>0.55 0.35 0.18 1</diffuse></material></visual>
+        <inertial><mass>8.0</mass><inertia><ixx>0.18</ixx><iyy>0.35</iyy><izz>0.43</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+    </model>
+
+    <!-- Shelf (Room 2 north wall — already grounded) -->
+    <model name="shelf"><static>true</static><pose>3.5 2.1 0.6 0 0 0</pose>
+      <link name="f">
+        <collision name="c"><geometry><box><size>0.8 0.30 1.2</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.8 0.30 1.2</size></box></geometry>
+          <material><ambient>0.50 0.38 0.22 1</ambient><diffuse>0.55 0.42 0.25 1</diffuse></material></visual>
+        <inertial><mass>12.0</mass><inertia><ixx>1.57</ixx><iyy>2.01</iyy><izz>0.57</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+    </model>
+
+    <!-- Desk (Room 2 east — solid block to floor) -->
+    <model name="desk"><static>true</static><pose>5.5 1.5 0.36 0 0 0</pose>
+      <link name="body">
+        <collision name="c"><geometry><box><size>1.2 0.6 0.72</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>1.2 0.6 0.72</size></box></geometry>
+          <material><ambient>0.50 0.35 0.20 1</ambient><diffuse>0.60 0.40 0.22 1</diffuse></material></visual>
+        <inertial><mass>12.0</mass><inertia><ixx>0.58</ixx><iyy>1.46</iyy><izz>1.68</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+    </model>
+
+    <!-- Room 1: side table (south wall, asymmetric placement) -->
+    <model name="side_table"><static>true</static><pose>-1.2 -1.8 0.20 0 0 0</pose>
+      <link name="body">
+        <collision name="c"><geometry><box><size>0.45 0.45 0.40</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.45 0.45 0.40</size></box></geometry>
+          <material><ambient>0.55 0.40 0.25 1</ambient><diffuse>0.60 0.45 0.28 1</diffuse></material></visual>
+        <inertial><mass>5.0</mass><inertia><ixx>0.11</ixx><iyy>0.11</iyy><izz>0.07</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+    </model>
+
+    <!-- Room 1: plant pot (near doorway, east side) -->
+    <model name="plant_pot"><static>true</static><pose>-0.2 1.5 0.15 0 0 0</pose>
+      <link name="body">
+        <collision name="c"><geometry><cylinder><radius>0.18</radius><length>0.30</length></cylinder></geometry></collision>
+        <visual name="v"><geometry><cylinder><radius>0.18</radius><length>0.30</length></cylinder></geometry>
+          <material><ambient>0.55 0.30 0.15 1</ambient><diffuse>0.60 0.35 0.18 1</diffuse></material></visual>
+        <inertial><mass>4.0</mass><inertia><ixx>0.04</ixx><iyy>0.04</iyy><izz>0.06</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+    </model>
+
+    <!-- Room 2: armchair (south-west, distinctive L-shape scan) -->
+    <model name="armchair"><static>true</static><pose>1.8 -1.5 0 0 0 0.3</pose>
+      <link name="seat"><pose>0 0 0.22 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.55 0.55 0.44</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.55 0.55 0.44</size></box></geometry>
+          <material><ambient>0.50 0.25 0.20 1</ambient><diffuse>0.55 0.30 0.22 1</diffuse></material></visual>
+        <inertial><mass>8.0</mass><inertia><ixx>0.22</ixx><iyy>0.22</iyy><izz>0.20</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+      <link name="back"><pose>-0.22 0 0.50 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.10 0.55 0.36</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.10 0.55 0.36</size></box></geometry>
+          <material><ambient>0.45 0.22 0.18 1</ambient><diffuse>0.50 0.25 0.20 1</diffuse></material></visual>
+        <inertial><mass>3.0</mass><inertia><ixx>0.08</ixx><iyy>0.03</iyy><izz>0.09</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+      <joint name="jb" type="fixed"><parent>seat</parent><child>back</child></joint>
+    </model>
+
+    <!-- Room 2: small cabinet (east wall, below desk level) -->
+    <model name="cabinet"><static>true</static><pose>5.8 -1.0 0.25 0 0 0</pose>
+      <link name="body">
+        <collision name="c"><geometry><box><size>0.40 0.50 0.50</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.40 0.50 0.50</size></box></geometry>
+          <material><ambient>0.45 0.35 0.20 1</ambient><diffuse>0.50 0.40 0.25 1</diffuse></material></visual>
+        <inertial><mass>10.0</mass><inertia><ixx>0.21</ixx><iyy>0.14</iyy><izz>0.18</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+    </model>
+
+    <!-- Room 2: tall lamp stand (center-north, cylindrical for unique scan) -->
+    <model name="lamp_stand"><static>true</static><pose>4.5 1.2 0.40 0 0 0</pose>
+      <link name="body">
+        <collision name="c"><geometry><cylinder><radius>0.12</radius><length>0.80</length></cylinder></geometry></collision>
+        <visual name="v"><geometry><cylinder><radius>0.12</radius><length>0.80</length></cylinder></geometry>
+          <material><ambient>0.20 0.20 0.20 1</ambient><diffuse>0.25 0.25 0.25 1</diffuse></material></visual>
+        <inertial><mass>3.0</mass><inertia><ixx>0.17</ixx><iyy>0.17</iyy><izz>0.02</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+    </model>
+
+    <!-- ==================== COLLECTION BOX ==================== -->
+    <model name="collection_box"><static>true</static><pose>-3.5 -1.8 0 0 0 0</pose>
+      <link name="bottom"><pose>0 0 0.01 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.50 0.40 0.02</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.50 0.40 0.02</size></box></geometry>
+          <material><ambient>0.6 0.55 0.40 1</ambient><diffuse>0.65 0.60 0.45 1</diffuse></material></visual>
+        <inertial><mass>1.0</mass><inertia><ixx>0.013</ixx><iyy>0.021</iyy><izz>0.034</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+      <link name="wf"><pose>0.24 0 0.10 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.02 0.40 0.18</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.02 0.40 0.18</size></box></geometry>
+          <material><ambient>0.6 0.55 0.40 1</ambient><diffuse>0.65 0.60 0.45 1</diffuse></material></visual></link>
+      <joint name="jf" type="fixed"><parent>bottom</parent><child>wf</child></joint>
+      <link name="wb"><pose>-0.24 0 0.10 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.02 0.40 0.18</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.02 0.40 0.18</size></box></geometry>
+          <material><ambient>0.6 0.55 0.40 1</ambient><diffuse>0.65 0.60 0.45 1</diffuse></material></visual></link>
+      <joint name="jb" type="fixed"><parent>bottom</parent><child>wb</child></joint>
+      <link name="wl"><pose>0 0.19 0.10 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.46 0.02 0.18</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.46 0.02 0.18</size></box></geometry>
+          <material><ambient>0.6 0.55 0.40 1</ambient><diffuse>0.65 0.60 0.45 1</diffuse></material></visual></link>
+      <joint name="jl" type="fixed"><parent>bottom</parent><child>wl</child></joint>
+      <link name="wr"><pose>0 -0.19 0.10 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.46 0.02 0.18</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.46 0.02 0.18</size></box></geometry>
+          <material><ambient>0.6 0.55 0.40 1</ambient><diffuse>0.65 0.60 0.45 1</diffuse></material></visual></link>
+      <joint name="jr" type="fixed"><parent>bottom</parent><child>wr</child></joint>
+    </model>
+
+    <!-- ==================== 5 PICKUP OBJECTS ==================== -->
+
+    <!-- Red block (Room 1, in front of spawn) -->
+    <model name="pickup_red_block"><pose>-1.5 -0.3 0.025 0 0 0.3</pose>
+      <link name="link">
+        <collision name="c"><geometry><box><size>0.05 0.05 0.05</size></box></geometry>
+          <surface><friction><ode><mu>0.8</mu><mu2>0.6</mu2></ode></friction></surface></collision>
+        <visual name="v"><geometry><box><size>0.05 0.05 0.05</size></box></geometry>
+          <material><ambient>0.8 0.1 0.1 1</ambient><diffuse>0.9 0.15 0.15 1</diffuse></material></visual>
+        <inertial><mass>0.05</mass><inertia><ixx>0.0000042</ixx><iyy>0.0000042</iyy><izz>0.0000042</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+    </model>
+
+    <!-- Green can (Room 1 east) -->
+    <model name="pickup_green_can"><pose>-1.0 0.5 0.04 0 0 0</pose>
+      <link name="link">
+        <collision name="c"><geometry><cylinder><radius>0.03</radius><length>0.08</length></cylinder></geometry>
+          <surface><friction><ode><mu>0.8</mu><mu2>0.6</mu2></ode></friction></surface></collision>
+        <visual name="v"><geometry><cylinder><radius>0.03</radius><length>0.08</length></cylinder></geometry>
+          <material><ambient>0.1 0.7 0.15 1</ambient><diffuse>0.15 0.8 0.2 1</diffuse></material></visual>
+        <inertial><mass>0.08</mass><inertia><ixx>0.0000053</ixx><iyy>0.0000053</iyy><izz>0.0000036</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+    </model>
+
+    <!-- Blue toy (Room 2 entrance) -->
+    <model name="pickup_blue_toy"><pose>2.0 0.0 0.025 0 0 0.7</pose>
+      <link name="link">
+        <collision name="c"><geometry><box><size>0.06 0.04 0.05</size></box></geometry>
+          <surface><friction><ode><mu>0.8</mu><mu2>0.6</mu2></ode></friction></surface></collision>
+        <visual name="v"><geometry><box><size>0.06 0.04 0.05</size></box></geometry>
+          <material><ambient>0.1 0.2 0.8 1</ambient><diffuse>0.15 0.25 0.9 1</diffuse></material></visual>
+        <inertial><mass>0.04</mass><inertia><ixx>0.0000014</ixx><iyy>0.0000020</iyy><izz>0.0000017</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+    </model>
+
+    <!-- Yellow ball (Room 2 center) -->
+    <model name="pickup_yellow_ball"><pose>3.5 -0.8 0.035 0 0 0</pose>
+      <link name="link">
+        <collision name="c"><geometry><sphere><radius>0.035</radius></sphere></geometry>
+          <surface><friction><ode><mu>0.8</mu><mu2>0.6</mu2></ode></friction></surface></collision>
+        <visual name="v"><geometry><sphere><radius>0.035</radius></sphere></geometry>
+          <material><ambient>0.8 0.7 0.1 1</ambient><diffuse>0.9 0.8 0.15 1</diffuse></material></visual>
+        <inertial><mass>0.06</mass><inertia><ixx>0.0000029</ixx><iyy>0.0000029</iyy><izz>0.0000029</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+    </model>
+
+    <!-- Purple cylinder (Room 2 far east) -->
+    <model name="pickup_purple_cyl"><pose>5.0 0.5 0.03 0 0 0.5</pose>
+      <link name="link">
+        <collision name="c"><geometry><cylinder><radius>0.025</radius><length>0.06</length></cylinder></geometry>
+          <surface><friction><ode><mu>0.8</mu><mu2>0.6</mu2></ode></friction></surface></collision>
+        <visual name="v"><geometry><cylinder><radius>0.025</radius><length>0.06</length></cylinder></geometry>
+          <material><ambient>0.5 0.1 0.6 1</ambient><diffuse>0.6 0.15 0.7 1</diffuse></material></visual>
+        <inertial><mass>0.05</mass><inertia><ixx>0.0000020</ixx><iyy>0.0000020</iyy><izz>0.0000016</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      </link>
+    </model>
+
+  </world>
+</sdf>
