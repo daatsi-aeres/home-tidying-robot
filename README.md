@@ -1,12 +1,10 @@
-# TidyBot — Home-Tidying Robot Simulation
+# TidyBot: a home-tidying robot in ROS 2 and Gazebo
 
-[![Demo Video](assets/demo.gif)](https://youtu.be/L3voKXgXxlE)
+A mobile manipulator that sweeps a two-room home, drives to five scattered objects, picks each one up with a scripted arm motion, and brings them to a collection box. It runs autonomously with Nav2 on a custom skid-steer robot with a 3-DOF arm, LiDAR, camera, and IMU, all modeled from scratch in URDF and SDF.
 
-## Demo Video
+[![Demo video](assets/demo.gif)](https://youtu.be/L3voKXgXxlE)
 
-https://youtu.be/L3voKXgXxlE
-
-A ROS 2 simulation of a home-tidying robot that navigates a two-room home, collects 5 scattered objects, and returns them to a collection box.
+Full run: <https://youtu.be/L3voKXgXxlE>. Design decisions (robot model, world, Nav2 tuning, localization under skid-steer slip, pick-and-place) are in [`docs/APPROACH.md`](docs/APPROACH.md).
 
 ## System Requirements
 

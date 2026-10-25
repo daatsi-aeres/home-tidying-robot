@@ -109,7 +109,7 @@ After all 5 objects are collected, the robot navigates back to the collection bo
 
 ## Tradeoffs
 
-1. **Nav2 over custom waypoint follower**: More setup complexity but dramatically better path planning, obstacle avoidance, and recovery behaviors. The assignment says simple logic is fine — but Nav2 is actually simpler to get working correctly than a well-tuned custom controller.
+1. **Nav2 over custom waypoint follower**: More setup complexity but dramatically better path planning, obstacle avoidance, and recovery behaviors. Simple waypoint logic would have been enough, but Nav2 is actually simpler to get working correctly than a well-tuned custom controller.
 
 2. **Proximity cancel over precise goal reaching**: Canceling navigation at 0.5m from the target and using the arm's reach eliminates the goal-oscillation problem without requiring controller parameter tuning.
 
@@ -148,7 +148,7 @@ My initial plan was to use Drift to generate the robot and world first, evaluate
 ### Setup Experience
 I started without ROS or Gazebo installed and asked Drift to set up both in a conda environment. I was aware that Gazebo can be problematic in conda, but I hoped it would leverage the latest Robostack packages to handle this. After 20+ debugging steps, the tool was unable to resolve the conda-based installation and its responses became repetitive — restating the initial instructions rather than adapting to the specific errors encountered.
 
-I moved to a bare metal ROS 2 + Gazebo setup. Drift installed ROS 2 Humble but paired it with Gazebo Harmonic (`gz sim 8`). This created a fundamental compatibility issue: `ros-humble-ros-gz-bridge` is compiled against Ignition Fortress (`ign-transport11`), while Gazebo Harmonic uses `gz-transport13`. The bridge couldn't forward any data between Gazebo and ROS — a version mismatch that should have been caught before installation since the ROS-Gazebo pairing is well-documented. After that I did ask drift to make the robot URDF but given the time I had already spent, I decided to proceed with the assignment on my own after that.
+I moved to a bare metal ROS 2 + Gazebo setup. Drift installed ROS 2 Humble but paired it with Gazebo Harmonic (`gz sim 8`). This created a fundamental compatibility issue: `ros-humble-ros-gz-bridge` is compiled against Ignition Fortress (`ign-transport11`), while Gazebo Harmonic uses `gz-transport13`. The bridge couldn't forward any data between Gazebo and ROS — a version mismatch that should have been caught before installation since the ROS-Gazebo pairing is well-documented. After that I did ask drift to make the robot URDF but given the time I had already spent, I decided to build the rest on my own.
 
 ### Robot URDF Comparison
 Drift did generate a robot URDF before I moved on. Comparing it with my final build:
